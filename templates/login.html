@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <form action="/login" method="post">
+        <label for="email">Почта: </label>
+        <input id="email" type="email" name="email"> <br>
+        <label for="password">Пароль: </label>
+        <input id="password" type="password" name="password"> <br>
+
+        <input type="radio" id="sign_up" name="sign" value="up" checked>
+        <label for="sign_up">Зарегистрироваться </label>
+        <input type="radio" id="sign_in" name="sign" value="in">
+        <label for="sign_in">Войти </label> <br>
+
+        {% for message in get_flashed_messages() %}
+            <p>{{ message }}</p>
+        {% endfor %}
+
+        <input type="submit" value="Войти/Зарегистрироваться">
+    </form>
+</body>
+</html>
