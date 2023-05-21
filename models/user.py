@@ -12,14 +12,11 @@ class User(sa.Model):
     password_hash = sa.Column(sa.String)
 
     @staticmethod
-    def get_user_by_email(email: str):
+    def get_by_email(email: str):
         user = sa.session.query(User).filter_by(email=email).first()
         return user
 
     @staticmethod
-    def check_auth(email: str, password_hash: str):
-        user = User.get_user_by_email(email)
-        if user and password_hash == user.password_hash:
-            session["user"] = user.id
-            return True
-        return False
+    def create_user(email: str, password_hash: str):
+        user = User(email=email, password_hash=password_hash)
+        sa.session.add(user)
