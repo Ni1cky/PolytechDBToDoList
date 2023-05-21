@@ -1,7 +1,3 @@
-import hashlib
-
-from flask import session
-
 from store.postgres import sa
 
 
@@ -20,3 +16,4 @@ class User(sa.Model):
     def create_user(email: str, password_hash: str):
         user = User(email=email, password_hash=password_hash)
         sa.session.add(user)
+        return user

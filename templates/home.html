@@ -1,23 +1,17 @@
-<!-- <p>Вы вошли, {{ user.email }}, Ваш id {{ user.id }}</p> -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-  <link rel="stylesheet" href="home.css">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
   <title>ToDoList</title>
 </head>
 <body>
 
-<h2>Three Unequal Columns</h2>
-
 <div class="row">
   <div class="column left" style="background-color:#aaa;">
-    <h2>Column 1</h2>
-    <p>Some text..</p>
     <select>
       {% for group in groups %}
-        {% if group.name == current_group%}
+        {% if group.name == current_group.name%}
           <option selected>{{ group.name }}</option>
         {% else %}
           <option>{{ group.name }}</option>
@@ -26,12 +20,12 @@
     </select>
   </div>
   <div class="column middle" style="background-color:#bbb;">
-    <h2>Column 2</h2>
-    <p>Some text..</p>
+    {% for task in tasks %}
+      render_template("task.html", task)
+    {% endfor %}
   </div>
   <div class="column right" style="background-color:#ccc;">
-    <h2>Column 3</h2>
-    <p>Some text..</p>
+    <form action="/logout"><input type="submit" value="Выйти"></form>
   </div>
 </div>
 

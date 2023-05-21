@@ -1,0 +1,14 @@
+<li>
+    <input class='task' type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
+    <label class='task' for="deadline">Срок:</label>
+    <input class='task' type="date" id="deadline" name="deadline" value="{{task.deadline}}">
+    <br>
+    <select>
+        {% for subtask in task.subtasks %}
+            <option>
+                <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
+                {{subtask.description}}
+            </option>
+        {% endfor %}
+    </select>
+</li>

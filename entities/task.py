@@ -1,6 +1,5 @@
 from flask import session
 from pydantic import BaseModel
-from models import User as UserModel
 
 
 class Task(BaseModel):
@@ -12,6 +11,6 @@ class Task(BaseModel):
         orm_mode = True
 
     @staticmethod
-    def get_groups_tasks(current_group: str):
+    def get_groups_tasks(current_group_id: int):
         current_user = session["user"]
         return []  # TODO: Получение списка задач в выбранной группе
