@@ -450,4 +450,6 @@ $RECYCLE.BIN/
 .idea/
 
 
+test.css
+test.html
 docker-compose.yaml
