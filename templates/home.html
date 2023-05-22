@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
+  <title>ToDoList</title>
 </head>
 <body>
-    <p>Вы вошли, {{ user_id }}</p>
+
+<div class="row">
+  <div class="column left" style="background-color:#aaa;">
+    <select>
+      {% for group in groups %}
+        {% if group.name == current_group.name%}
+          <option selected>{{ group.name }}</option>
+        {% else %}
+          <option>{{ group.name }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </div>
+  <div class="column middle" style="background-color:#bbb;">
+    {% for task in tasks %}
+      render_template("task.html", task)
+    {% endfor %}
+  </div>
+  <div class="column right" style="background-color:#ccc;">
+    <form action="/logout"><input type="submit" value="Выйти"></form>
+  </div>
+</div>
+
 </body>
 </html>
