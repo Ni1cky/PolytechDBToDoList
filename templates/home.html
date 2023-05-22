@@ -18,6 +18,10 @@
         {% endif %}
       {% endfor %}
     </select>
+    <form action="/group" method="post">
+      <input type="text" name="new_group_name" required>
+      <input type="submit" value="Добавить группу задач">
+    </form>
   </div>
   <div class="column middle" style="background-color:#bbb;">
     {% for task in tasks %}

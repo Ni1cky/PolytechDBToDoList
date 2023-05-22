@@ -25,3 +25,8 @@ class Group(BaseModel):
         if to_dicts:
             groups = [group.dict() for group in groups]
         return groups
+
+    @staticmethod
+    def create_group(group_name: str, user_id: int = None):
+        user_id = user_id if user_id else session["user"]["id"]
+        GroupModel.create_group(group_name, user_id)

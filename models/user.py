@@ -6,10 +6,21 @@ class User(sa.Model):
     id = sa.Column(sa.Integer, primary_key=True)
     email = sa.Column(sa.String)
     password_hash = sa.Column(sa.String)
+    groups = sa.relationship(
+        "Group",
+        back_populates="user",
+        cascade="save-update, merge, delete"
+    )
+    tasks = sa.relationship(
+        "Task",
+        back_populates="user",
+        cascade="save-update, merge, delete"
+    )
 
     @staticmethod
     def get_by_email(email: str):
         user = sa.session.query(User).filter_by(email=email).first()
+        # print(user.groups)
         return user
 
     @staticmethod

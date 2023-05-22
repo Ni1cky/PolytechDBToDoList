@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, session
 from flask_migrate import Migrate
 
+from models import User
 from routers import *
 from store.config import PostgresConfig
 from store.postgres import sa
@@ -14,11 +15,19 @@ migrate = Migrate(app, sa)
 
 app.register_blueprint(login_blueprint)
 app.register_blueprint(views_blueprint)
+app.register_blueprint(groups_blueprint)
 
 
 @app.teardown_appcontext
 def commit_session(exception=None):
     sa.session.commit()
+
+
+# @app.route("/test")
+# def test():
+#     user = session["user"]
+#     user_model = User.get_by_email(user["email"])
+#     sa.session.delete(user_model)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,6 @@ from hashlib import sha256
 from flask import Blueprint, request, redirect, flash, url_for, session
 
 from entities import User
-from models import User as UserModel
 
 login_blueprint = Blueprint("login", __name__)
 
