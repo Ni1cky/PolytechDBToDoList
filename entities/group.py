@@ -1,6 +1,7 @@
 from flask import session
 from pydantic import BaseModel
 from models import Group as GroupModel
+from store.postgres import sa
 
 
 class Group(BaseModel):
@@ -29,4 +30,21 @@ class Group(BaseModel):
     @staticmethod
     def create_group(group_name: str, user_id: int = None):
         user_id = user_id if user_id else session["user"]["id"]
-        GroupModel.create_group(group_name, user_id)
+        group_model = GroupModel.create_group(group_name, user_id)
+        sa.session.commit()
+        group = Group.from_orm(group_model)
+        return group
+
+    @staticmethod
+    def get_all_group():
+        current_users_groups = Group.get_users_groups()
+        for g in current_users_groups:
+            if g.name == "Все задачи":
+                return g
+
+    @staticmethod
+    def delete_group(group_id: int):
+        all_group = Group.get_all_group()
+        if all_group.id != group_id:
+            print(f"Удаляем группу {group_id}")
+            GroupModel.delete_group(group_id)
