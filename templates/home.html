@@ -3,6 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
+  <script src="{{ url_for('static', filename='task_requests.js') }}"></script>
   <title>ToDoList</title>
 </head>
 <body>
@@ -34,9 +35,9 @@
       <li>
         <form action="" method="post">
 <!--TODO внизу получается надо добавить этот самый complete в модельку?-->
-        <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
+        <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
         <label class='deadline' for="deadline">Срок:</label>
-        <input type="date" id="deadline" name="deadline" value="{{task.deadline}}">
+        <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" {% if task.deadline %} value="{{task.deadline}}" {% endif %}>
         <br>
         <select>
             {% for subtask in task.subtasks %}
