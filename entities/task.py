@@ -13,4 +13,6 @@ class Task(BaseModel):
     @staticmethod
     def get_groups_tasks(current_group_id: int):
         current_user = session["user"]
-        return []  # TODO: Получение списка задач в выбранной группе
+        return [{'id': 1, 'description': 'банан', 'user_id': 1},
+                {'id': 2, 'description': 'ананас', 'user_id': 1},
+                {'id': 3, 'description': 'водород', 'user_id': 1}]  # TODO: Получение списка задач в выбранной группе
