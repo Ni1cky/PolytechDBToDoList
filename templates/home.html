@@ -9,7 +9,7 @@
 
 <div class="row">
   <div class="column left" style="background-color:#aaa;">
-    <select id="d1" onchange="document.location.href='/' + this.children[this.selectedIndex].value">
+    <select onchange="document.location.href='/' + this.children[this.selectedIndex].value">
       {% for group in groups %}
         {% if group.name == current_group.name%}
           <option selected value="{{group.id}}">{{ group.name }}</option>
@@ -32,7 +32,7 @@
   <div class="column middle" style="background-color:#bbb;">
     {% for task in tasks %}
       <li>
-        <form action="" method="">
+        <form action="" method="post">
 <!--TODO внизу получается надо добавить этот самый complete в модельку?-->
         <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
         <label class='deadline' for="deadline">Срок:</label>
@@ -48,7 +48,7 @@
             {% endfor %}
         </select>
         <br>
-        <input type="submit" value="delete task?">
+        <input type="submit" value="Удалить задачу">
         </form>
       </li>
     {% endfor %}
