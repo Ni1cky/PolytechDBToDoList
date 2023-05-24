@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" type="text/css" href= "{{ url_for('static',filename='home.css') }}">
 </head>
 <body>
-    <form action="/login" method="post">
+    <header></header>
+    <form action="/login" method="post" style="background-color: #00D4FF; padding: 10px;">
         <label for="email">Почта: </label>
         <input id="email" type="email" name="email"> <br>
         <label for="password">Пароль: </label>
@@ -19,8 +21,7 @@
         {% for message in get_flashed_messages() %}
             <p>{{ message }}</p>
         {% endfor %}
-
-        <input type="submit" value="Войти/Зарегистрироваться">
+        <input type="submit" value="Войти/Зарегистрироваться" style="margin-top: 5px;">
     </form>
 </body>
 </html>

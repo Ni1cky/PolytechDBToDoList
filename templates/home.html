@@ -3,14 +3,13 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
-  <script src="{{ url_for('static', filename='task_requests.js') }}"></script>
   <title>ToDoList</title>
 </head>
 <body>
-
+<header></header>
 <div class="row">
-  <div class="column left" style="background-color:#aaa;">
-    <select onchange="document.location.href='/' + this.children[this.selectedIndex].value">
+  <div class="column left">
+    <select onchange="document.location.href='/home/' + this.children[this.selectedIndex].value">
       {% for group in groups %}
         {% if group.name == current_group.name%}
           <option selected value="{{group.id}}">{{ group.name }}</option>
@@ -30,13 +29,13 @@
     </form>
   </div>
 
-  <div class="column middle" style="background-color:#bbb;">
+  <div class="column middle">
     {% for task in tasks %}
         <form action="" method="post">
         <!--TODO внизу получается надо добавить этот самый complete в модельку?-->
-            <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
+            <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
             <label class='deadline' for="deadline">Срок:</label>
-            <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" {% if task.deadline %} value="{{task.deadline}}" {% endif %}>
+            <input type="date" id="deadline" name="deadline" value="{{task.deadline}}">
             <input class='delete' type="submit" value="Удалить задачу">
             <br>
 
@@ -64,7 +63,7 @@
     </form>
   </div>
 
-  <div class="column right" style="background-color:#ccc;">
+  <div class="column right">
     <form action="/logout"><input type="submit" value="Выйти"></form>
   </div>
 </div>

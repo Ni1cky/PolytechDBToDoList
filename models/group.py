@@ -36,7 +36,5 @@ class Group(sa.Model):
 
     @staticmethod
     def delete_group(group_id: int):
-        print(f"Удаляем группу {group_id}")
         group = Group.get_by_id(group_id)
         sa.session.delete(group)
-        print(f"Удалили группу {group_id}")
