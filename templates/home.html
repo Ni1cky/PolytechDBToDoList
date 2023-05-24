@@ -1,75 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
-  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
-  <script src="{{ url_for('static', filename='task_requests.js') }}"></script>
-  <title>ToDoList</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
+    <script src="{{ url_for('static', filename='task_requests.js') }}"></script>
+    <title>ToDoList</title>
 </head>
 <body>
 <header></header>
 <div class="row">
-  <div class="column left">
-    <select onchange="document.location.href='/home/' + this.children[this.selectedIndex].value">
-      {% for group in groups %}
-        {% if group.name == current_group.name%}
-          <option selected value="{{group.id}}">{{ group.name }}</option>
-        {% else %}
-          <option value="{{group.id}}">{{ group.name }}</option>
-        {% endif %}
-      {% endfor %}
-    </select>
-    <form action="/group" method="post">
-      <input type="text" name="new_group_name">
-      <input type="submit" value="Добавить группу задач">
-    </form>
-
-    <br>
-    <form action="/group/delete/{{ current_group.id }}" method="post">
-      <input type="submit" value="Удалить активную группу задач">
-    </form>
-  </div>
-
-  <div class="column middle">
-    {% for task in tasks %}
-        <form action="/tasks/delete/{{task.id}}" method="post">
-            {% if task.complete %}
-                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" checked /> {{task.description}}
-            {% else %}
-                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" /> {{task.description}}
-            {% endif %}
-            <label class='deadline' for="deadline">Срок:</label>
-            <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" value="{{task.dead_line if task.dead_line else ''}}">
-            <input class='delete' type="submit" value="Удалить задачу">
+    <div class="column left">
+        <select onchange="document.location.href='/home/' + this.children[this.selectedIndex].value">
+            {% for group in groups %}
+                <option {{ "selected" if group.name == current_group.name else "" }} value="{{group.id}}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <form action="/group" method="post">
+            <input type="text" name="new_group_name">
+            <input type="submit" value="Добавить группу задач">
         </form>
-        <br>
 
-        <button type="button" class="collapsible">Открыть подзадачи</button>
-        <div class="content">
-            {% for subtask in task.subtasks %}
-                    <form action="____" method="post">
-                        <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
+        <br>
+        <form action="/group/delete/{{ current_group.id }}" method="post">
+            <input type="submit" value="Удалить активную группу задач">
+        </form>
+    </div>
+
+    <div class="column middle">
+        {% for task in tasks %}
+            <form action="/tasks/delete/{{task.id}}" method="post">
+                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" {{ "checked" if task.complete else "" }}  /> {{task.description}}
+                <label class='deadline' for="deadline">Срок:</label>
+                <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" value="{{task.dead_line if task.dead_line else ''}}">
+                <input class='delete' type="submit" value="Удалить задачу">
+            </form>
+            <br>
+
+            <button type="button" class="collapsible">Открыть подзадачи</button>
+            <div class="content">
+                {% for subtask in task.subtasks %}
+                    <form action="/subtasks/delete/{{subtask.id}}" method="post">
+                        <input onchange="complete_task(this.value)" value="{{subtask.id}}" type="checkbox" {{ "checked" if subtask.complete else "" }}  />
                         {{subtask.description}}
                         <input class='delete' type="submit" value="Удалить подзадачу">
                         <hr>
                     </form>
-            {% endfor %}
-            <form action="/subtasks/{{task.id}}" method="post">
-              <input type="text" name="new_subtask_name">
-              <input type="submit" value="Добавить подзадачу">
-            </form>
-        </div>
-        <hr>
-    {% endfor %}
-    <form action="/task/{{current_group.id}}" method="post">
-      <input type="text" name="new_task_name" >
-      <input type="submit" value="Добавить задачу">
-    </form>
-  </div>
+                {% endfor %}
+                <form action="/subtasks/{{task.id}}" method="post">
+                    <input type="text" name="new_subtask_name">
+                    <input type="submit" value="Добавить подзадачу">
+                </form>
+            </div>
+            <hr>
+        {% endfor %}
+        <form action="/task/{{current_group.id}}" method="post">
+            <input type="text" name="new_task_name" >
+            <input type="submit" value="Добавить задачу">
+        </form>
+    </div>
 
-  <div class="column right">
-    <form action="/logout"><input type="submit" value="Выйти"></form>
-  </div>
+    <div class="column right">
+        <form action="/logout"><input type="submit" value="Выйти"></form>
+    </div>
 </div>
 
 <script>

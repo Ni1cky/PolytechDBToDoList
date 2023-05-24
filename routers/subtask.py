@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, session
 
 from models import Task, Subtask
 from routers.validation import validate_session, validate_text_field
@@ -16,4 +16,10 @@ def create_subtask(main_task_id: int):
             subtask = Task.create_task(new_subtask_name)
             sa.session.commit()
             Subtask.create_subtask_column(subtask.id, main_task_id)
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.home", current_group_id=session["current_group_id"]))
+
+
+@subtasks_blueprint.route("/subtasks/delete/<int:subtask_id>", methods=["POST"])
+def delete_subtask(subtask_id: int):
+    Task.delete_task(subtask_id, is_subtask=True)
+    return redirect(url_for("views.home", current_group_id=session["current_group_id"]))

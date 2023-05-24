@@ -27,5 +27,8 @@ def login():
 
 @login_blueprint.route("/logout")
 def logout():
-    session.pop("user")
+    if "user" in session:
+        session.pop("user")
+    if "current_group_id" in session:
+        session.pop("current_group_id")
     return redirect(url_for("views.home"))

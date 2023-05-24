@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 
 from entities import Group, Task
 from routers.validation import validate_session
@@ -16,6 +16,7 @@ def home(current_group_id: int):
             Group.get_by_id(current_group_id) if current_group_id
             else Group.get_all_group()
         )
+        session["current_group_id"] = current_group.id
         return render_template(
             "home.html",
             groups=Group.get_users_groups(to_dicts=True),

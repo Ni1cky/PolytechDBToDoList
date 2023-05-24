@@ -35,10 +35,10 @@ def create_task(group_id: int):
             the_tasks_group.tasks.append(new_task)
             all_group = GroupModel.get_by_id(Group.get_all_group().id)
             all_group.tasks.append(new_task)
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.home", current_group_id=group_id))
 
 
 @tasks_blueprint.route("/tasks/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id: int):
     Task.delete_task(task_id)
-    return redirect(url_for("views.home"))
+    return redirect(url_for("views.home", current_group_id=session["current_group_id"]))

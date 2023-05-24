@@ -43,14 +43,22 @@ class Task(sa.Model):
 
     def delete_subtasks(self):
         subtasks = self.get_subtasks()
+        subtasks_connection_columns = sa.session.query(Subtask).filter_by(main_id=self.id).all()
+        for subtask_connection_column in subtasks_connection_columns:
+            sa.session.delete(subtask_connection_column)
         for subtask in subtasks:
             sa.session.delete(subtask)
-        subtasks_connection_columns = sa.session.query(Subtask).filter_by(main_id=self.id).all()
+
+    def stop_being_subtask(self):
+        subtasks_connection_columns = sa.session.query(Subtask).filter_by(subtask_id=self.id).all()
         for subtask_connection_column in subtasks_connection_columns:
             sa.session.delete(subtask_connection_column)
 
     @staticmethod
-    def delete_task(task_id: int):
+    def delete_task(task_id: int, is_subtask=False):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        task.delete_subtasks()
+        if is_subtask:
+            task.stop_being_subtask()
+        else:
+            task.delete_subtasks()
         sa.session.delete(task)
