@@ -1,4 +1,4 @@
-from models import tasks_groups_table
+from models import tasks_groups_table, Task
 from store.postgres import sa
 
 
@@ -37,4 +37,7 @@ class Group(sa.Model):
     @staticmethod
     def delete_group(group_id: int):
         group = Group.get_by_id(group_id)
+        groups_tasks = group.tasks
+        for task in groups_tasks:
+            task.delete_subtasks()
         sa.session.delete(group)

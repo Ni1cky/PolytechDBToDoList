@@ -11,11 +11,6 @@ class User(sa.Model):
         back_populates="user",
         cascade="save-update, merge, delete"
     )
-    tasks = sa.relationship(
-        "Task",
-        back_populates="user",
-        cascade="save-update, merge, delete"
-    )
 
     @staticmethod
     def get_by_email(email: str):
