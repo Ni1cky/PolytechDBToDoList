@@ -34,6 +34,7 @@ class Task(sa.Model):
 
     def get_subtasks(self):
         subtasks_ids = sa.session.query(Subtask).with_entities(Subtask.subtask_id).filter_by(main_id=self.id).all()
+        subtasks_ids = [subtask[0] for subtask in subtasks_ids]
         subtasks = [
             sa.session.query(Task).filter_by(id=task_id).first()
             for task_id in subtasks_ids

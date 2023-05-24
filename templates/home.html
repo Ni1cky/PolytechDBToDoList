@@ -41,24 +41,24 @@
             <label class='deadline' for="deadline">Срок:</label>
             <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" value="{{task.dead_line if task.dead_line else ''}}">
             <input class='delete' type="submit" value="Удалить задачу">
-            <br>
-
-            <button type="button" class="collapsible">Открыть подзадачи</button>
-            <div class="content">
-                {% for subtask in task.subtasks %}
-                        <form action="____" method="post">
-                            <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
-                            {{subtask.description}}
-                            <input class='delete' type="submit" value="Удалить подзадачу">
-                            <hr>
-                        </form>
-                {% endfor %}
-                <form action="/subtasks/{{task.id}}" method="post">
-                  <input type="text" name="new_subtask_name">
-                  <input type="submit" value="Добавить подзадачу">
-                </form>
-            </div>
         </form>
+        <br>
+
+        <button type="button" class="collapsible">Открыть подзадачи</button>
+        <div class="content">
+            {% for subtask in task.subtasks %}
+                    <form action="____" method="post">
+                        <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
+                        {{subtask.description}}
+                        <input class='delete' type="submit" value="Удалить подзадачу">
+                        <hr>
+                    </form>
+            {% endfor %}
+            <form action="/subtasks/{{task.id}}" method="post">
+              <input type="text" name="new_subtask_name">
+              <input type="submit" value="Добавить подзадачу">
+            </form>
+        </div>
         <hr>
     {% endfor %}
     <form action="/task/{{current_group.id}}" method="post">
