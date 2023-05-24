@@ -1,4 +1,4 @@
-from models import tasks_groups_table, Task
+from models import tasks_groups_table
 from store.postgres import sa
 
 
