@@ -1,4 +1,4 @@
-from flask import Blueprint, session, redirect, url_for, request
+from flask import Blueprint, redirect, url_for, request
 
 from entities import Group
 from routers.validation import validate_session, validate_text_field
