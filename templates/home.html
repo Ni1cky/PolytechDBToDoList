@@ -6,10 +6,10 @@
   <title>ToDoList</title>
 </head>
 <body>
-
+<header></header>
 <div class="row">
-  <div class="column left" style="background-color:#aaa;">
-    <select onchange="document.location.href='/' + this.children[this.selectedIndex].value">
+  <div class="column left">
+    <select onchange="document.location.href='/home/' + this.children[this.selectedIndex].value">
       {% for group in groups %}
         {% if group.name == current_group.name%}
           <option selected value="{{group.id}}">{{ group.name }}</option>
@@ -29,35 +29,61 @@
     </form>
   </div>
 
-  <div class="column middle" style="background-color:#bbb;">
+  <div class="column middle">
     {% for task in tasks %}
-      <li>
         <form action="" method="post">
-<!--TODO внизу получается надо добавить этот самый complete в модельку?-->
-        <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
-        <label class='deadline' for="deadline">Срок:</label>
-        <input type="date" id="deadline" name="deadline" value="{{task.deadline}}">
-        <br>
-        <select>
-            {% for subtask in task.subtasks %}
-<!--              TODO а почему тут опшн?-->
-                <option>
-                    <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
-                    {{subtask.description}}
-                </option>
-            {% endfor %}
-        </select>
-        <br>
-        <input type="submit" value="Удалить задачу">
+        <!--TODO внизу получается надо добавить этот самый complete в модельку?-->
+            <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
+            <label class='deadline' for="deadline">Срок:</label>
+            <input type="date" id="deadline" name="deadline" value="{{task.deadline}}">
+            <input class='delete' type="submit" value="Удалить задачу">
+            <br>
+
+            <button type="button" class="collapsible">Открыть подзадачи</button>
+            <div class="content">
+                {% for subtask in task.subtasks %}
+                        <form action="____" method="post">
+                            <input type="checkbox" {% if subtask.complete %} checked {% endif%}/>
+                            {{subtask.description}}
+                            <input class='delete' type="submit" value="Удалить подзадачу">
+                            <hr>
+                        </form>
+                {% endfor %}
+                <form action="/____" method="post">
+                  <input type="text" name="new_subtask_name" required>
+                  <input type="submit" value="Добавить подзадачу">
+                </form>
+            </div>
         </form>
-      </li>
+        <hr>
     {% endfor %}
+    <form action="/____" method="post">
+      <input type="text" name="new_task_name" required>
+      <input type="submit" value="Добавить задачу">
+    </form>
   </div>
 
-  <div class="column right" style="background-color:#ccc;">
+  <div class="column right">
     <form action="/logout"><input type="submit" value="Выйти"></form>
   </div>
 </div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

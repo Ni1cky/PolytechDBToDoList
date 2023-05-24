@@ -1,3 +1,5 @@
+from datetime import date
+
 from store.postgres import sa
 
 
@@ -10,3 +12,12 @@ class Deadline(sa.Model):
         "Task",
         back_populates="deadline"
     )
+
+    @staticmethod
+    def set_deadline(task_id: int, deadline_date: date):
+        deadline = sa.session.query(Deadline).filter_by(task_id=task_id).first()
+        if deadline:
+            deadline.deadline = deadline_date
+        else:
+            deadline = Deadline(deadline=deadline_date, task_id=task_id)
+        sa.session.add(deadline)

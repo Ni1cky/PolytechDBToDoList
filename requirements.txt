@@ -1,6 +1,8 @@
 Flask==2.2.3
 Flask-SQLAlchemy
 pydantic
+# psycopg2-binary
 psycopg2
 Flask-Migrate
+Flask-CORS
 # gunicorn

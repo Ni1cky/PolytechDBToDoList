@@ -20,7 +20,6 @@ class User(sa.Model):
     @staticmethod
     def get_by_email(email: str):
         user = sa.session.query(User).filter_by(email=email).first()
-        # print(user.groups)
         return user
 
     @staticmethod

@@ -22,3 +22,9 @@ class Task(sa.Model):
         back_populates="task",
         cascade="save-update, merge, delete"
     )
+
+    @staticmethod
+    def set_complete(task_id: int):
+        task = sa.session.query(Task).filter_by(id=task_id).first()
+        task.complete = not task.complete
+        sa.session.add(task)

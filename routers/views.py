@@ -10,7 +10,6 @@ views_blueprint = Blueprint("views", __name__)
 @views_blueprint.route("/<int:current_group_id>")
 @views_blueprint.route("/home/<int:current_group_id>")
 def home(current_group_id: int):
-    print(current_group_id)
     if session.get("user", None):
         current_group = (
             Group.get_by_id(current_group_id) if current_group_id

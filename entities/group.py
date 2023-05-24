@@ -46,5 +46,4 @@ class Group(BaseModel):
     def delete_group(group_id: int):
         all_group = Group.get_all_group()
         if all_group.id != group_id:
-            print(f"Удаляем группу {group_id}")
             GroupModel.delete_group(group_id)
