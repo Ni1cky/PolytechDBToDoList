@@ -3,6 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
   <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='home.css') }}">
+  <script src="{{ url_for('static', filename='task_requests.js') }}"></script>
   <title>ToDoList</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
       {% endfor %}
     </select>
     <form action="/group" method="post">
-      <input type="text" name="new_group_name" required>
+      <input type="text" name="new_group_name">
       <input type="submit" value="Добавить группу задач">
     </form>
 
@@ -31,11 +32,14 @@
 
   <div class="column middle">
     {% for task in tasks %}
-        <form action="" method="post">
-        <!--TODO внизу получается надо добавить этот самый complete в модельку?-->
-            <input type="checkbox" {% if task.complete %} checked {% endif%}/> {{task.description}}
+        <form action="/tasks/delete/{{task.id}}" method="post">
+            {% if task.complete %}
+                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" checked /> {{task.description}}
+            {% else %}
+                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" /> {{task.description}}
+            {% endif %}
             <label class='deadline' for="deadline">Срок:</label>
-            <input type="date" id="deadline" name="deadline" value="{{task.deadline}}">
+            <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" value="{{task.dead_line if task.dead_line else ''}}">
             <input class='delete' type="submit" value="Удалить задачу">
             <br>
 
@@ -49,16 +53,16 @@
                             <hr>
                         </form>
                 {% endfor %}
-                <form action="/____" method="post">
-                  <input type="text" name="new_subtask_name" required>
+                <form action="/subtasks/{{task.id}}" method="post">
+                  <input type="text" name="new_subtask_name">
                   <input type="submit" value="Добавить подзадачу">
                 </form>
             </div>
         </form>
         <hr>
     {% endfor %}
-    <form action="/____" method="post">
-      <input type="text" name="new_task_name" required>
+    <form action="/task/{{current_group.id}}" method="post">
+      <input type="text" name="new_task_name" >
       <input type="submit" value="Добавить задачу">
     </form>
   </div>
