@@ -7,7 +7,7 @@ from store.postgres import sa
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = PostgresConfig.db_url
-app.config["SECRET_KEY"] = "popajopa"
+app.config["SECRET_KEY"] = "S3cr3tK3y"
 
 sa.init_app(app)
 migrate = Migrate(app, sa)
