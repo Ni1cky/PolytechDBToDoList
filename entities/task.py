@@ -9,7 +9,7 @@ from models import Group
 class Task(BaseModel):
     id: int
     description: str
-    complete: bool
+    completed: bool
     subtasks: Optional[list]
     dead_line: Optional[date]
 

@@ -1,64 +1,58 @@
-from models import tasks_groups_table, Subtask
+from datetime import date
+
+from models import tasks_groups_table
 from store.postgres import sa
 
 
 class Task(sa.Model):
     __tablename__ = "tasks"
-    id = sa.Column(sa.Integer, primary_key=True)
+    id = sa.Column(sa.Integer, primary_key=True, index=True)
     description = sa.Column(sa.String)
-    complete = sa.Column(sa.Boolean)
+    completed = sa.Column(sa.Boolean)
+    deadline = sa.Column(sa.Date)
+    parent_id = sa.Column(sa.Integer, index=True, nullable=False)
     groups = sa.relationship(
         "Group",
         secondary=tasks_groups_table,
         back_populates="tasks",
     )
-    deadline = sa.relationship(
-        "Deadline",
+    logs = sa.relationship(
+        "TaskLogs",
         back_populates="task",
         cascade="save-update, merge, delete"
     )
 
     @staticmethod
-    def set_complete(task_id: int):
+    def set_completed(task_id: int):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        task.complete = not task.complete
+        task.completed = not task.completed
         sa.session.add(task)
 
     @staticmethod
-    def create_task(description: str):
+    def create_task(description: str, parent_id=0):
         new_task = Task(
-            description=description, complete=False
+            description=description, completed=False, parent_id=parent_id
         )
         sa.session.add(new_task)
         return new_task
 
     def get_subtasks(self):
-        subtasks_ids = sa.session.query(Subtask).with_entities(Subtask.subtask_id).filter_by(main_id=self.id).all()
-        subtasks_ids = [subtask[0] for subtask in subtasks_ids]
-        subtasks = [
-            sa.session.query(Task).filter_by(id=task_id).first()
-            for task_id in subtasks_ids
-        ]
+        subtasks = sa.session.query(Task).filter_by(parent_id=self.id).all()
         return subtasks
 
     def delete_subtasks(self):
         subtasks = self.get_subtasks()
-        subtasks_connection_columns = sa.session.query(Subtask).filter_by(main_id=self.id).all()
-        for subtask_connection_column in subtasks_connection_columns:
-            sa.session.delete(subtask_connection_column)
         for subtask in subtasks:
             sa.session.delete(subtask)
-
-    def stop_being_subtask(self):
-        subtasks_connection_columns = sa.session.query(Subtask).filter_by(subtask_id=self.id).all()
-        for subtask_connection_column in subtasks_connection_columns:
-            sa.session.delete(subtask_connection_column)
 
     @staticmethod
     def delete_task(task_id: int, is_subtask=False):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        if is_subtask:
-            task.stop_being_subtask()
-        else:
-            task.delete_subtasks()
+        task.delete_subtasks()
         sa.session.delete(task)
+
+    @staticmethod
+    def set_deadline_by_id(task_id: int, deadline: date):
+        task = sa.session.query(Task).filter_by(id=task_id).first()
+        task.deadline = deadline
+        sa.session.add(task)

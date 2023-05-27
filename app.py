@@ -16,7 +16,6 @@ app.register_blueprint(login_blueprint)
 app.register_blueprint(views_blueprint)
 app.register_blueprint(groups_blueprint)
 app.register_blueprint(tasks_blueprint)
-app.register_blueprint(subtasks_blueprint)
 
 
 @app.teardown_appcontext
