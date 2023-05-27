@@ -1,6 +1,6 @@
 from datetime import date
 
-from models import tasks_groups_table
+from models import tasks_groups_table, TaskLogs
 from store.postgres import sa
 
 
@@ -25,8 +25,9 @@ class Task(sa.Model):
     @staticmethod
     def set_completed(task_id: int):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        task.completed = not task.completed
+        task.completed = True
         sa.session.add(task)
+        TaskLogs.log_finish(task_id)
 
     @staticmethod
     def create_task(description: str, parent_id=0):
@@ -34,6 +35,8 @@ class Task(sa.Model):
             description=description, completed=False, parent_id=parent_id
         )
         sa.session.add(new_task)
+        sa.session.commit()
+        TaskLogs.log_creation(new_task.id)
         return new_task
 
     def get_subtasks(self):
@@ -46,10 +49,11 @@ class Task(sa.Model):
             sa.session.delete(subtask)
 
     @staticmethod
-    def delete_task(task_id: int, is_subtask=False):
+    def delete_task(task_id: int):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        task.delete_subtasks()
-        sa.session.delete(task)
+        if not task.completed:
+            task.delete_subtasks()
+            sa.session.delete(task)
 
     @staticmethod
     def set_deadline_by_id(task_id: int, deadline: date):
