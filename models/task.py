@@ -19,7 +19,6 @@ class Task(sa.Model):
     logs = sa.relationship(
         "TaskLogs",
         back_populates="task",
-        cascade="save-update, merge, delete"
     )
 
     @staticmethod
@@ -28,6 +27,15 @@ class Task(sa.Model):
         task.completed = True
         sa.session.add(task)
         TaskLogs.log_finish(task_id)
+
+        if task.parent_id:
+            parent = Task.get_by_id(task.parent_id)
+            parent.check_subtasks_completion()
+
+    @staticmethod
+    def get_by_id(task_id: int):
+        task = sa.session.query(Task).filter_by(id=task_id).first()
+        return task
 
     @staticmethod
     def create_task(description: str, parent_id=0):
@@ -60,3 +68,9 @@ class Task(sa.Model):
         task = sa.session.query(Task).filter_by(id=task_id).first()
         task.deadline = deadline
         sa.session.add(task)
+
+    def check_subtasks_completion(self):
+        subtasks = self.get_subtasks()
+        if all([subtask.completed for subtask in subtasks]):
+            self.completed = True
+            sa.session.add(self)
