@@ -1,5 +1,7 @@
 from datetime import date
 
+from sqlalchemy import or_
+
 from models import tasks_groups_table, TaskLogs
 from store.postgres import sa
 
@@ -74,3 +76,32 @@ class Task(sa.Model):
         if all([subtask.completed for subtask in subtasks]):
             self.completed = True
             sa.session.add(self)
+
+    @staticmethod
+    def get_statistics():
+        tasks_with_logs = sa.session.query(
+            Task.id, Task.description, Task.deadline, Task.parent_id, Task.completed,
+            TaskLogs.creation_date, TaskLogs.finish_date).filter(
+            or_(Task.completed == True, Task.parent_id != 0)
+        ).join(TaskLogs).filter(TaskLogs.task_id == Task.id).all()
+
+        formatted_result = dict()
+        for task in tasks_with_logs:
+            if task.parent_id == 0:
+                formatted_result[task.id] = {
+                    "description": task.description,
+                    "deadline": task.deadline,
+                    "creation_date": task.creation_date,
+                    "finish_date": task.finish_date,
+                    "subtasks": [
+                        {
+                            "description": subtask.description,
+                            "completed": subtask.completed,
+                            "creation_date": subtask.creation_date,
+                            "finish_date": subtask.finish_date
+                        }
+                        for subtask in tasks_with_logs
+                        if subtask.parent_id == task.id
+                    ]
+                }
+        return formatted_result

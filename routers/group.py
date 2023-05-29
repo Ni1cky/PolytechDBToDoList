@@ -15,10 +15,3 @@ def add_new_group():
             group = Group.create_group(new_group_name)
             return redirect(url_for("views.home", current_group_id=group.id))
     return redirect(url_for("views.home"))
-
-
-@groups_blueprint.route("/group/delete/<int:group_id>", methods=["POST"])
-def delete_group(group_id: int):
-    if validate_session():
-        Group.delete_group(group_id)
-    return redirect(url_for("views.home"))
