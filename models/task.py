@@ -1,8 +1,9 @@
 from datetime import date
 
+from flask import session
 from sqlalchemy import or_
 
-from models import tasks_groups_table, TaskLogs
+from models import tasks_groups_table, TaskLogs, Group
 from store.postgres import sa
 
 
@@ -68,8 +69,9 @@ class Task(sa.Model):
     @staticmethod
     def set_deadline_by_id(task_id: int, deadline: date):
         task = sa.session.query(Task).filter_by(id=task_id).first()
-        task.deadline = deadline
-        sa.session.add(task)
+        if not task.completed:
+            task.deadline = deadline
+            sa.session.add(task)
 
     def check_subtasks_completion(self):
         subtasks = self.get_subtasks()
@@ -79,12 +81,22 @@ class Task(sa.Model):
 
     @staticmethod
     def get_statistics():
-        tasks_with_logs = sa.session.query(
-            Task.id, Task.description, Task.deadline, Task.parent_id,
-            Task.completed,
-            TaskLogs.creation_date, TaskLogs.finish_date).filter(
+        all_group_id = sa.session.query(Group).filter_by(
+            name="Все задачи", user_id=session["user"]["id"]
+        ).first().id
+
+        tasks_with_stats_query = sa.session.query(
+            Task.id, Task.description, Task.deadline, Task.parent_id, Task.completed,
+            TaskLogs.creation_date, TaskLogs.finish_date
+        ).join(tasks_groups_table).filter_by(
+            group_id=all_group_id
+        ).filter(
             or_(Task.completed == True, Task.parent_id != 0)
-        ).join(TaskLogs).filter(TaskLogs.task_id == Task.id).all()
+        ).join(TaskLogs).filter(
+            TaskLogs.task_id == Task.id
+        )
+        print(tasks_with_stats_query)
+        tasks_with_logs = tasks_with_stats_query.all()
 
         formatted_result = list()
         for task in tasks_with_logs:
