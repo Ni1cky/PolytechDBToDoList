@@ -23,7 +23,7 @@ class Task(BaseModel):
         for task_model in task_models:
             task = Task.from_orm(task_model)
             if task_model.deadline:
-                task.dead_line = task_model.deadline[0].deadline
+                task.dead_line = task_model.deadline
             subtasks = [
                 Task.from_orm(subtask_model)
                 for subtask_model in task_model.get_subtasks()
