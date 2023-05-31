@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session
 
 from entities import Group, Task
+from models import Task as TaskModel
 from routers.validation import validate_session
 
 views_blueprint = Blueprint("views", __name__)
@@ -24,3 +25,10 @@ def home(current_group_id: int):
             current_group=current_group.dict()
         )
     return render_template("login.html")
+
+
+@views_blueprint.route("/statistics")
+def get_statistics():
+    if validate_session():
+        statistics = TaskModel.get_statistics()
+        return render_template("statistics.html", statistics=statistics)

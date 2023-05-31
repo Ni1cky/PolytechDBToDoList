@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='home.css') }}">
+    <title>ToDoList</title>
+</head>
+<body>
+<header></header>
+<div class="row">
+    <div class="column left">
+
+        <form action="/home" method="get">
+            <input type="submit" value="К списку задач">
+        </form>
+    </div>
+
+    <div class="column middle">
+        {% for task in statistics %}
+            <table style="width:100%">
+                <tr>
+                    <th>Описание задачи</th>
+                    <th>Дата создания</th>
+                    <th>Дедлайн</th>
+                    <th>Дата завершения</th>
+                </tr>
+                <tr>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.creation_date }}</td>
+                    <td>{{ task.deadline if task.deadline else "Не задан" }}</td>
+                    <td>{{ task.finish_date }}</td>
+                </tr>
+            </table>
+            <button type="button" class="collapsible">Открыть подзадачи</button>
+            <div class="content">
+                <table>
+                    <tr>
+                        <th>Описание задачи</th>
+                        <th>Дата создания</th>
+                        <th>Выполнена</th>
+                        <th>Дата завершения</th>
+                    </tr>
+                    {% for subtask in task.subtasks %}
+                        <tr>
+                            <td>{{ subtask.description }}</td>
+                            <td>{{ subtask.creation_date }}</td>
+                            <td>{{ "Да" if subtask.completed else "Нет" }}</td>
+                            <td>{{ subtask.finish_date if subtask.finish_date else "" }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <br>
+            <hr>
+            <br>
+        {% endfor %}
+
+    </div>
+
+    <div class="column right">
+        <form action="/logout"><input type="submit" value="Выйти"></form>
+    </div>
+</div>
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

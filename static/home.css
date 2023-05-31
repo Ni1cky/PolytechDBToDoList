@@ -79,3 +79,11 @@ header {
 .delete {
   float: right;
 }
+
+table, th, td {
+  border:1px solid #00B5D9;
+}
+
+td {
+  text-align: center;
+}

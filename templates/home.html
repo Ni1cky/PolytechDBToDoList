@@ -21,15 +21,15 @@
         </form>
 
         <br>
-        <form action="/group/delete/{{ current_group.id }}" method="post">
-            <input type="submit" value="Удалить активную группу задач">
+        <form action="/statistics" method="get">
+            <input type="submit" value="Ваша статистика">
         </form>
     </div>
 
     <div class="column middle">
         {% for task in tasks %}
             <form action="/tasks/delete/{{task.id}}" method="post">
-                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" {{ "checked" if task.complete else "" }}  /> {{task.description}}
+                <input onchange="complete_task(this.value)" value="{{task.id}}" type="checkbox" {{ "checked" if task.completed else "" }}  /> {{task.description}}
                 <label class='deadline' for="deadline">Срок:</label>
                 <input onchange="set_deadline(this.name, this.value)" name="{{task.id}}" type="date" id="deadline" value="{{task.dead_line if task.dead_line else ''}}">
                 <input class='delete' type="submit" value="Удалить задачу">
@@ -39,8 +39,8 @@
             <button type="button" class="collapsible">Открыть подзадачи</button>
             <div class="content">
                 {% for subtask in task.subtasks %}
-                    <form action="/subtasks/delete/{{subtask.id}}" method="post">
-                        <input onchange="complete_task(this.value)" value="{{subtask.id}}" type="checkbox" {{ "checked" if subtask.complete else "" }}  />
+                    <form action="/tasks/delete/{{subtask.id}}" method="post">
+                        <input onchange="complete_task(this.value)" value="{{subtask.id}}" type="checkbox" {{ "checked" if subtask.completed else "" }}  />
                         {{subtask.description}}
                         <input class='delete' type="submit" value="Удалить подзадачу">
                         <hr>
