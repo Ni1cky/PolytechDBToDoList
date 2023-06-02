@@ -50,5 +50,10 @@ def create_subtask(main_task_id: int):
         parameters = request.form.to_dict()
         new_subtask_name = parameters["new_subtask_name"]
         if validate_text_field(new_subtask_name):
-            Task.create_task(new_subtask_name, main_task_id)
+            subtask = Task.create_task(new_subtask_name, main_task_id)
+            group_id = session["current_group_id"]
+            the_tasks_group = GroupModel.get_by_id(group_id)
+            the_tasks_group.tasks.append(subtask)
+            all_group = GroupModel.get_by_id(Group.get_all_group().id)
+            all_group.tasks.append(subtask)
     return redirect(url_for("views.home", current_group_id=session["current_group_id"]))

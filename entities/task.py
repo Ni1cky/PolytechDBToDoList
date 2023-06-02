@@ -10,6 +10,7 @@ class Task(BaseModel):
     id: int
     description: str
     completed: bool
+    parent_id: int
     subtasks: Optional[list]
     dead_line: Optional[date]
 
@@ -21,6 +22,8 @@ class Task(BaseModel):
         task_models = Group.get_by_id(group_id).tasks
         tasks = []
         for task_model in task_models:
+            if task_model.parent_id:
+                continue
             task = Task.from_orm(task_model)
             if task_model.deadline:
                 task.dead_line = task_model.deadline
